@@ -1,11 +1,17 @@
 package com.github.rbaul.servicelocatorpattern.demo.service.impl;
 
+import com.github.rbaul.servicelocatorpattern.demo.plugins.Plugin;
 import com.github.rbaul.servicelocatorpattern.demo.plugins.PluginType;
 import com.github.rbaul.servicelocatorpattern.demo.plugins.config.PluginFactory;
 import com.github.rbaul.servicelocatorpattern.demo.service.PluginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class PluginServiceImpl implements PluginService {
 
     private final PluginFactory pluginFactory;
+
+    private final ApplicationContext appContext;
 
     @Override
     public void executeByPluginType(PluginType pluginType) {
@@ -28,5 +36,10 @@ public class PluginServiceImpl implements PluginService {
         pluginFactory
                 .getPlugin(contentType)
                 .otherOutput();
+    }
+
+    @Override
+    public List<String> getPluginNames() {
+        return Arrays.asList(appContext.getBeanNamesForType(Plugin.class));
     }
 }

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/plugins", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,5 +23,10 @@ public class PluginController {
     @GetMapping
     public void executeByPluginType(@RequestParam String pluginType) {
         pluginService.executeByPluginType(pluginType);
+    }
+
+    @GetMapping("names")
+    public List<String> getPluginNames() {
+        return pluginService.getPluginNames();
     }
 }

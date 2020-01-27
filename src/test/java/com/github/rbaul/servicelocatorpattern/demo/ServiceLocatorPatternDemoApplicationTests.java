@@ -9,8 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Arrays;
 
 @ContextConfiguration(classes = {
         PluginConfig.class,
@@ -31,6 +34,9 @@ class ServiceLocatorPatternDemoApplicationTests {
 
     @Value("#{" + PluginType.PluginTypeConstants.TYPE_3_PLUGIN + "}")
     private Plugin pluginByExpression;
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Test
     void getPluginByEnum__Success() {
@@ -61,6 +67,14 @@ class ServiceLocatorPatternDemoApplicationTests {
     @Test
     void getPluginByExpression__Success() {
         Assertions.assertTrue(pluginByExpression instanceof Type3Plugin);
+    }
+
+    @Test
+    void getPluginNames__Success() {
+        String[] pluginNames = appContext.getBeanNamesForType(Plugin.class);
+        Arrays.stream(pluginNames).forEach(pluginName -> {
+            pluginFactory.getPlugin(pluginName);
+        });
     }
 
 }
