@@ -1,12 +1,14 @@
 package com.github.rbaul.servicelocatorpattern.demo.plugins;
 
+import com.github.rbaul.servicelocatorpattern.demo.plugins.config.Manual2PluginFactory;
+import com.github.rbaul.servicelocatorpattern.demo.plugins.config.ManualPluginFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public enum PluginType {
+public enum PluginType implements Plugin {
 
     TYPE_1(PluginTypeConstants.TYPE_1_PLUGIN),
 
@@ -19,6 +21,26 @@ public enum PluginType {
     @Override
     public String toString() {
         return pluginName;
+    }
+
+    @Override
+    public void otherOutput() {
+        ManualPluginFactory.getPluginByName(pluginName).otherOutput();
+        Manual2PluginFactory.getPluginByName(pluginName).otherOutput();
+        Manual2PluginFactory.getPluginByName(this).otherOutput();
+    }
+
+    @Override
+    public void defaultOutput() {
+        ManualPluginFactory.getPluginByName(pluginName).defaultOutput();
+        Manual2PluginFactory.getPluginByName(pluginName).defaultOutput();
+        Manual2PluginFactory.getPluginByName(this).defaultOutput();
+    }
+
+    public Plugin getPlugin() {
+        return ManualPluginFactory.getPluginByName(pluginName);
+//        return Manual2PluginFactory.getPluginByName(pluginName);
+//        return Manual2PluginFactory.getPluginByName(this);
     }
 
     public static Optional<PluginType> getByPluginName(String value) {

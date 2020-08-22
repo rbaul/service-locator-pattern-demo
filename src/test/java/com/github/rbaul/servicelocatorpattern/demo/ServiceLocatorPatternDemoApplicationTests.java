@@ -1,6 +1,8 @@
 package com.github.rbaul.servicelocatorpattern.demo;
 
 import com.github.rbaul.servicelocatorpattern.demo.plugins.*;
+import com.github.rbaul.servicelocatorpattern.demo.plugins.config.Manual2PluginFactory;
+import com.github.rbaul.servicelocatorpattern.demo.plugins.config.ManualPluginFactory;
 import com.github.rbaul.servicelocatorpattern.demo.plugins.config.PluginConfig;
 import com.github.rbaul.servicelocatorpattern.demo.plugins.config.PluginFactory;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 
@@ -21,7 +24,9 @@ import java.util.Arrays;
         Type2Plugin.class,
         Type3Plugin.class,
         OtherPlugin.class,
-        Other2Plugin.class
+        Other2Plugin.class,
+        ManualPluginFactory.class,
+        Manual2PluginFactory.class
 })
 @ExtendWith(SpringExtension.class)
 class ServiceLocatorPatternDemoApplicationTests {
@@ -53,6 +58,30 @@ class ServiceLocatorPatternDemoApplicationTests {
         pluginFactory.getPlugin(OtherPlugin.BEAN_NAME);
         pluginFactory.getPlugin(Other2Plugin.BEAN_NAME);
     }
+
+    @Test
+    void executePluginDirectlyFromEnum() {
+        PluginType.TYPE_1.defaultOutput();
+        PluginType.TYPE_2.defaultOutput();
+        PluginType.TYPE_3.defaultOutput();
+
+        PluginType.TYPE_1.otherOutput();
+        PluginType.TYPE_2.otherOutput();
+        PluginType.TYPE_3.otherOutput();
+    }
+
+    @Test
+    void getPluginFromEnum() {
+        Plugin plugin1 = PluginType.TYPE_1.getPlugin();
+        Plugin plugin2 = PluginType.TYPE_2.getPlugin();
+        Plugin plugin3 = PluginType.TYPE_3.getPlugin();
+
+        Assert.isTrue(plugin1 instanceof Type1Plugin, "");
+        Assert.isTrue(plugin2 instanceof Type2Plugin, "");
+        Assert.isTrue(plugin3 instanceof Type3Plugin, "");
+    }
+
+
 
     @Test()
     void getPluginByString__Exception() {
