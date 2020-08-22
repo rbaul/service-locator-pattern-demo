@@ -26,7 +26,8 @@ import java.util.Arrays;
         OtherPlugin.class,
         Other2Plugin.class,
         ManualPluginFactory.class,
-        Manual2PluginFactory.class
+        Manual2PluginFactory.class,
+        PluginType.InitEnumPlugins.class
 })
 @ExtendWith(SpringExtension.class)
 class ServiceLocatorPatternDemoApplicationTests {
@@ -68,6 +69,17 @@ class ServiceLocatorPatternDemoApplicationTests {
         PluginType.TYPE_1.otherOutput();
         PluginType.TYPE_2.otherOutput();
         PluginType.TYPE_3.otherOutput();
+    }
+
+    @Test
+    void getPluginFactoryFromEnum() {
+        Plugin plugin1 = PluginType.TYPE_1.getPluginFromFactory();
+        Plugin plugin2 = PluginType.TYPE_2.getPluginFromFactory();
+        Plugin plugin3 = PluginType.TYPE_3.getPluginFromFactory();
+
+        Assert.isTrue(plugin1 instanceof Type1Plugin, "");
+        Assert.isTrue(plugin2 instanceof Type2Plugin, "");
+        Assert.isTrue(plugin3 instanceof Type3Plugin, "");
     }
 
     @Test

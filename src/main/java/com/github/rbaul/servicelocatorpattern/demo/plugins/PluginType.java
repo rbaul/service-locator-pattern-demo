@@ -2,11 +2,19 @@ package com.github.rbaul.servicelocatorpattern.demo.plugins;
 
 import com.github.rbaul.servicelocatorpattern.demo.plugins.config.Manual2PluginFactory;
 import com.github.rbaul.servicelocatorpattern.demo.plugins.config.ManualPluginFactory;
+import com.github.rbaul.servicelocatorpattern.demo.plugins.config.PluginFactory;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.Optional;
 
+@Getter
 @RequiredArgsConstructor
 public enum PluginType implements Plugin {
 
@@ -17,6 +25,9 @@ public enum PluginType implements Plugin {
     TYPE_3(PluginTypeConstants.TYPE_3_PLUGIN);
 
     private final String pluginName;
+
+    @Setter(AccessLevel.PRIVATE)
+    private Plugin plugin;
 
     @Override
     public String toString() {
@@ -37,7 +48,7 @@ public enum PluginType implements Plugin {
         Manual2PluginFactory.getPluginByName(this).defaultOutput();
     }
 
-    public Plugin getPlugin() {
+    public Plugin getPluginFromFactory() {
         return ManualPluginFactory.getPluginByName(pluginName);
 //        return Manual2PluginFactory.getPluginByName(pluginName);
 //        return Manual2PluginFactory.getPluginByName(this);
@@ -53,4 +64,28 @@ public enum PluginType implements Plugin {
         String TYPE_2_PLUGIN = "pluginType2";
         String TYPE_3_PLUGIN = "pluginType3";
     }
+
+    @Component
+    public static class InitEnumPlugins {
+
+        /**
+         * With Factory
+         */
+        public InitEnumPlugins(PluginFactory pluginFactory) {
+            for (PluginType pluginType : EnumSet.allOf(PluginType.class)) {
+                pluginType.setPlugin(pluginFactory.getPlugin(pluginType));
+            }
+        }
+
+//        /**
+//         * Without Service Locator Pattern
+//         */
+//        public InitEnumPlugins(Map<String, Plugin> pluginMap) {
+//            for (PluginType pluginType : EnumSet.allOf(PluginType.class)) {
+//                pluginType.setPlugin(pluginMap.get(pluginType.getPluginName()));
+//            }
+//        }
+
+    }
+
 }
